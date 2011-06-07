@@ -75,6 +75,15 @@
                 search_state = search_state,
             )
         }}
+        {{macros.reversible_sort_button(
+                button_sort_criterium = 'views',
+                label = gettext('by views'),
+                asc_tooltip = gettext('click to see least viewed questions'),
+                desc_tooltip = gettext('click to see most viewed questions'),
+                current_sort_method = sort,
+                search_state = search_state,
+            )
+        }}
     </div>
 </div>
 

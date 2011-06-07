@@ -290,7 +290,8 @@ class ThreadManager(models.Manager):
             'answers-asc': 'answer_count',
             'votes-desc': '-score',
             'votes-asc': 'score',
-
+	    'views-desc': '-view_count',
+	    'views-asc': 'view_count',
             'relevance-desc': '-relevance', # special Postgresql-specific ordering, 'relevance' quaso-column is added by get_for_query()
         }
         orderby = QUESTION_ORDER_BY_MAP[search_state.sort]
