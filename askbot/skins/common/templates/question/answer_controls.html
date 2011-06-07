@@ -12,30 +12,25 @@
     <a class="question-delete"
     >{% if answer.deleted %}{% trans %}undelete{% endtrans %}{% else %}{% trans %}delete{% endtrans %}{% endif %}</a>
 </span>
-{% if answer.offensive_flag_count > 0 %}
-<span 
-    id="answer-offensive-remove-flag-{{ answer.id }}"
-    class="action-link offensive-flag"
-    title="{% trans %}remove offensive flag{% endtrans %}"
->
-    <a class="question-flag">{% trans %}remove flag{% endtrans %}</a>
-</span>
-<span 
-    id="answer-offensive-flag-{{ answer.id }}"
-    class="action-link offensive-flag"
-    title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
->
-    <a class="question-flag">{% trans %}flag offensive{% endtrans %} ({{ answer.offensive_flag_count }})</a>
-    </a>
-</span>
+{% if not user.is_anonymous() %}
+{% if user.get_flags_for_post(answer).count() > 0 %}
+    <span
+        id="answer-offensive-remove-flag-{{ answer.id }}"
+        class="action-link offensive-flag"
+        title="{% trans %}remove offensive flag{% endtrans %}"
+    >
+        <a class="question-flag">{% trans %}remove offensive flag{% endtrans %}
+    {% if answer.offensive_flag_count > 0 %}({{answer.offensive_flag_count }}){% endif %}</a>
+    </span>
 {% else %}
-<span 
-    id="answer-offensive-flag-{{ answer.id }}"
-    class="action-link offensive-flag"
-    title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
->
-    <a class="question-flag">{% trans %}flag offensive{% endtrans %}</a>
-</span>
+    <span
+        id="answer-offensive-flag-{{ answer.id }}" class="offensive-flag"
+        title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
+    >
+        <a class="question-flag">{% trans %}flag offensive{% endtrans %}
+    {% if answer.offensive_flag_count > 0 %}({{answer.offensive_flag_count }}){% endif %}</a>
+    </span>
+{% endif %}
 {% endif %}
 <span id='post-{{answer.id}}-edit' class="action-link">
     <a class="question-edit" href="{% url edit_answer answer.id %}">{% trans %}edit{% endtrans %}</a>

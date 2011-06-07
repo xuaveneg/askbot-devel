@@ -668,7 +668,7 @@ var Vote = function(){
                 $(object).children('span[class="darkred"]').text("");
 
             // Change the link text and rebind events
-            $(object).find("a.question-flag").html(gettext("remove flag"));
+            $(object).find("a.question-flag").html(gettext("remove offensive flag ("+ data.count +")"));
             var obj_id = $(object).attr("id");
             $(object).attr("id", obj_id.replace("flag-", "remove-flag-"));
 
@@ -702,7 +702,11 @@ var Vote = function(){
                 $(remove_all).remove();
             }
             // Change the link text and rebind events
-            $(object).find("a.question-flag").html(gettext("flag offensive"));
+	    if (data.count > 0){
+                $(object).find("a.question-flag").html(gettext("flag offensive ("+ data.count +")"));
+	    } else {
+                $(object).find("a.question-flag").html(gettext("flag offensive"));
+	    }
             var obj_id = $(object).attr("id");
             $(object).attr("id", obj_id.replace("remove-flag-", "flag-"));
 
@@ -1147,7 +1151,7 @@ DeletePostLink.prototype.setPostDeleted = function(is_deleted){
         this.getElement().html(gettext('undelete'));
     } else if (is_deleted === false){
         post.removeClass('deleted');
-        this._post_deleted = false;
+	this._post_deleted = false;
         this.getElement().html(gettext('delete'));
     }
 };

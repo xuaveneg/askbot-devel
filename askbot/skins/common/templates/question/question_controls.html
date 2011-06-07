@@ -7,27 +7,25 @@
 {% else %}
     <a class="question-close" href="{% url close question.id %}">{% trans %}close{% endtrans %}</a>
 {% endif %}
-{% if question.offensive_flag_count > 0 %}
+{% if not user.is_anonymous() %}
+{% if user.get_flags_for_post(question).count() > 0 %}
     <span 
         id="question-offensive-remove-flag-{{ question.id }}"
         class="offensive-flag"
-        title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
+        title="{% trans %}remove offensive flag{% endtrans %}"
     >
-        <a class="question-flag">{% trans %}remove flag{% endtrans %}</a>
-    </span>
-    <span 
-        id="question-offensive-flag-{{ question.id }}" class="offensive-flag"
-        title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
-    >
-        <a class="question-flag">{% trans %}flag offensive{% endtrans %} ({{ question.offensive_flag_count }})</a>
+        <a class="question-flag">{% trans %}remove offensive flag{% endtrans %} 
+    {% if question.offensive_flag_count > 0 %}({{question.offensive_flag_count }}){% endif %}</a>
     </span>
 {% else %}
     <span 
         id="question-offensive-flag-{{ question.id }}" class="offensive-flag"
         title="{% trans %}report as offensive (i.e containing spam, advertising, malicious text, etc.){% endtrans %}"
     >
-        <a class="question-flag">{% trans %}flag offensive{% endtrans %}</a>
+        <a class="question-flag">{% trans %}flag offensive{% endtrans %}
+    {% if question.offensive_flag_count > 0 %}({{question.offensive_flag_count }}){% endif %}</a>
     </span>
+{% endif %}
 {% endif %}
 <script type="text/javascript">
     var retagUrl = "{% url retag_question question.id %}";
