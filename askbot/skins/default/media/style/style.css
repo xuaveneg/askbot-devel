@@ -319,9 +319,8 @@ body.user-messages {
   background: -210px -5px url(../images/sprites.png) no-repeat;
 }
 #header.with-logo #userToolsNav {
-  position: absolute;
-  bottom: 0;
-  right: 0px;
+  float: left;
+  margin: 7px 20px 7px 20px;
 }
 #header.without-logo #userToolsNav {
   float: left;
@@ -3269,9 +3268,6 @@ ul.post-retag input {
   width: 400px;
   height: 1.5em;
   margin: 3px 0 0 -3px;
-}
-#question-controls .tags {
-  margin: 0 0 3px 0;
 }
 #tagSelector {
   padding-bottom: 2px;

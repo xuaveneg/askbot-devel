@@ -5,12 +5,12 @@
     class="{% if settings.SHOW_LOGO %}with-logo{% else %}without-logo{% endif %}"
 >
     <div class="content-wrapper">
-        <div id="userToolsNav">
-            {% include "widgets/user_navigation.html" %}
-        </div>
         {% if settings.SHOW_LOGO %}
             {% include "widgets/logo.html" %}
         {% endif %}
+        <div id="userToolsNav">
+            {% include "widgets/user_navigation.html" %}
+        </div>
         <div id="metaNav">
             {% include "widgets/meta_nav.html" %}
         </div>
