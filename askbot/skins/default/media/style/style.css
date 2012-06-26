@@ -1407,6 +1407,10 @@ ul#related-tags li {
   box-shadow: 1px 1px 2px #636363;
   margin-right: 7px;
 }
+#fmanswer input.submit.answer-own-question {
+  font-weight: bold;
+  font-size: 18px;
+}
 #fmanswer input.submit:hover,
 .ask-page input.submit:hover,
 .edit-question-page input.submit:hover {
