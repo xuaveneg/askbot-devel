@@ -186,7 +186,10 @@ def user_get_avatar_url(self, size):
                 logging.critical(message)
                 raise django_exceptions.ImproperlyConfigured(message)
         else:
-            return self.get_gravatar_url(size)
+            if askbot_settings.ENABLE_GRAVATAR: #avatar.settings.AVATAR_GRAVATAR_BACKUP:
+                return self.get_gravatar_url(size)
+            else:
+                return self.get_default_avatar_url(size)
     else:
         if askbot_settings.ENABLE_GRAVATAR:
             return self.get_gravatar_url(size)
