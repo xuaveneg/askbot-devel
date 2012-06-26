@@ -1582,10 +1582,10 @@ class Post(models.Model):
 
     def get_question_title(self):
         if self.is_question():
-            if self.thread.closed:
-                attr = const.POST_STATUS['closed']
-            elif self.deleted:
+            if self.deleted:
                 attr = const.POST_STATUS['deleted']
+            elif self.thread.closed:
+                attr = const.POST_STATUS['closed']
             else:
                 attr = None
             if attr is not None:

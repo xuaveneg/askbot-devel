@@ -473,10 +473,10 @@ class Thread(models.Model):
     def get_title(self, question=None):
         if not question:
             question = self._question_post() # allow for optimization if the caller has already fetched the question post for this thread
-        if self.closed:
-            attr = const.POST_STATUS['closed']
-        elif question.deleted:
+        if question.deleted:
             attr = const.POST_STATUS['deleted']
+        elif self.closed:
+            attr = const.POST_STATUS['closed']
         else:
             attr = None
         if attr is not None:
