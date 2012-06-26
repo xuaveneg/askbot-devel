@@ -18,7 +18,7 @@
                 </div>
                 {{ answer.html }}
             </div>
-            <div class="answer-controls post-controls">
+            <div class="answer-controls post-controls" id="post-{{ answer.id }}-controls">
                 {% include "question/answer_controls.html" %}
             </div>
             {% include "question/answer_comments.html" %}

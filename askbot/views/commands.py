@@ -255,6 +255,10 @@ def vote(request, id):
             if request.user.is_authenticated():
                 answer_id = request.POST.get('postId')
                 answer = get_object_or_404(models.Post, post_type='answer', id = answer_id)
+		if answer.deleted:
+		    raise exceptions.PermissionDenied(_('Sorry, you cannot choose a deleted answer'))
+		elif answer.thread.closed or answer.thread._question_post().deleted:
+		    raise exceptions.PermissionDenied(_('Sorry, you cannot choose an answer on a closed or deleted question'))
                 # make sure question author is current user
                 if answer.accepted():
                     request.user.unaccept_best_answer(answer)
@@ -290,6 +294,10 @@ def vote(request, id):
             #
             ######################
 
+	    if post.deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot vote for a deleted %s') % (post.post_type))
+	    elif post.thread.closed or post.thread._question_post().deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot vote on a closed or deleted question'))
             response_data = process_vote(
                                         user = request.user,
                                         vote_direction = vote_direction,
@@ -308,6 +316,10 @@ def vote(request, id):
             if vote_type == '8':
                 id = request.POST.get('postId')
                 post = get_object_or_404(models.Post, post_type='answer', id=id)
+	    if post.deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot flag a deleted %s') % (post.post_type))
+	    elif post.thread.closed or post.thread._question_post().deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot flag on a closed or deleted question'))
 
             request.user.flag_post(post)
 
@@ -315,12 +327,16 @@ def vote(request, id):
             response_data['success'] = 1
 
         elif vote_type in ['7.5', '8.5']:
-            #flag question or answer
+            #remove flag question or answer
             if vote_type == '7.5':
                 post = get_object_or_404(models.Post, post_type='question', id=id)
             if vote_type == '8.5':
                 id = request.POST.get('postId')
                 post = get_object_or_404(models.Post, post_type='answer', id=id)
+	    if post.deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot remove a flag on a deleted %s') % (post.post_type))
+	    elif post.thread.closed or post.thread._question_post().deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot remove a flag on a closed or deleted question'))
 
             request.user.flag_post(post, cancel = True)
 
@@ -334,6 +350,10 @@ def vote(request, id):
             if vote_type == '8.6':
                 id = request.POST.get('postId')
                 post = get_object_or_404(models.Post, id=id)
+	    if post.deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot remove all flags on a deleted %s') % (post.post_type))
+	    elif post.thread.closed or post.thread._question_post().deleted:
+		raise exceptions.PermissionDenied(_('Sorry, you cannot remove all flags on a closed or deleted question'))
 
             request.user.flag_post(post, cancel_all = True)
 
@@ -612,6 +632,9 @@ def close(request, id):#close question
     """
     question = get_object_or_404(models.Post, post_type='question', id=id)
     try:
+	if question.deleted:
+	    msg = _('Sorry, you cannot close a deleted question')
+	    raise exceptions.PermissionDenied(msg)
         if request.method == 'POST':
             form = forms.CloseForm(request.POST)
             if form.is_valid():

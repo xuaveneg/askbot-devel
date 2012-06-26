@@ -281,6 +281,9 @@ def retag_question(request, id):
 
     try:
         request.user.assert_can_retag_question(question)
+	if question.thread.closed or question.deleted:
+	    msg = _('Sorry, you cannot retag a deleted or a closed question')
+	    raise exceptions.PermissionDenied(msg)
         if request.method == 'POST':
             form = forms.RetagQuestionForm(question, request.POST)
             if form.is_valid():
@@ -334,6 +337,8 @@ def edit_question(request, id):
     revision_form = None
     try:
         request.user.assert_can_edit_question(question)
+	if question.thread.closed or question.deleted:
+	    raise exceptions.PermissionDenied(_('Sorry, you cannot edit a closed or deleted question'))
         if request.method == 'POST':
             if 'select_revision' in request.POST:
                 #revert-type edit - user selected previous revision
@@ -423,6 +428,10 @@ def edit_answer(request, id):
     try:
         request.user.assert_can_edit_answer(answer)
         latest_revision = answer.get_latest_revision()
+	if answer.deleted:
+	    raise exceptions.PermissionDenied(_('Sorry, you cannot edit a deleted answer'))
+	if answer.thread.closed or answer.thread._question_post().deleted:
+	    raise exceptions.PermissionDenied(_('Sorry, you cannot edit an answer on a closed or deleted question'))
         if request.method == "POST":
             if 'select_revision' in request.POST:
                 # user has changed revistion number
@@ -612,11 +621,14 @@ def edit_comment(request):
 
     comment_id = int(request.POST['comment_id'])
     comment_post = models.Post.objects.get(post_type='comment', id=comment_id)
+    parent = comment_post.parent
 
     request.user.edit_comment(comment_post=comment_post, body_text = request.POST['comment'])
 
     is_deletable = template_filters.can_delete_comment(comment_post.author, comment_post)
+
     is_editable = template_filters.can_edit_comment(comment_post.author, comment_post)
+
     tz = ' ' + template_filters.TIMEZONE_STR
 
     return {
@@ -651,7 +663,13 @@ def delete_comment(request):
             request.user.assert_can_delete_comment(comment)
 
             parent = comment.parent
-            comment.delete()
+            
+	    if parent.deleted:
+	        raise exceptions.PermissionDenied(_('Sorry, you cannot edit a comment of a deleted post'))
+            elif parent.thread.closed or parent.thread._question_post().deleted:
+	        raise exceptions.PermissionDenied(_('Sorry, you cannot edit a comment on a closed or deleted question'))
+            
+	    comment.delete()
             #attn: recalc denormalized field
             parent.comment_count = parent.comment_count - 1
             parent.save()

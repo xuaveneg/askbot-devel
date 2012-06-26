@@ -14,13 +14,13 @@
             </div>
             {{ question.html }}
         </div>
-        <div id="question-controls" class="post-controls">
+        <div id="post-{{question.id}}-controls" class="post-controls">
             {% include "question/question_controls.html" %}
         </div>
         <script type="text/javascript">
             (function(){
                 if (askbot['data']['userIsAuthenticated'] === false){
-                    var ctrl = document.getElementById('question-controls')
+                    var ctrl = document.getElementById('post-{{question.id}}-controls')
                     ctrl.parentNode.removeChild(ctrl);
                 }
             })();
